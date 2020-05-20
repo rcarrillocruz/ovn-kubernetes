@@ -105,6 +105,17 @@ func delIptRules(ipt util.IPTablesHelper, rules []iptRule) {
 func generateGatewayNATRules(ifname string, ip string) []iptRule {
 	// Allow packets to/from the gateway interface in case defaults deny
 	rules := make([]iptRule, 0)
+	// Block MCS
+	rules = append(rules, iptRule{
+		table: "filter",
+		chain: "FORWARD",
+		args:  []string{"-p", "tcp", "-m", "tcp", "--dport", "22623", "-j", "REJECT"},
+	})
+	rules = append(rules, iptRule{
+		table: "filter",
+		chain: "FORWARD",
+		args:  []string{"-p", "tcp", "-m", "tcp", "--dport", "22624", "-j", "REJECT"},
+	})
 	rules = append(rules, iptRule{
 		table: "filter",
 		chain: "FORWARD",
@@ -122,6 +133,17 @@ func generateGatewayNATRules(ifname string, ip string) []iptRule {
 		args:  []string{"-i", ifname, "-m", "comment", "--comment", "from OVN to localhost", "-j", "ACCEPT"},
 	})
 
+	// Block MCS
+	rules = append(rules, iptRule{
+		table: "nat",
+		chain: "OUTPUT",
+		args:  []string{"-p", "tcp", "-m", "tcp", "--dport", "22623", "-j", "REJECT"},
+	})
+	rules = append(rules, iptRule{
+		table: "nat",
+		chain: "OUTPUT",
+		args:  []string{"-p", "tcp", "-m", "tcp", "--dport", "22624", "-j", "REJECT"},
+	})
 	// NAT for the interface
 	rules = append(rules, iptRule{
 		table: "nat",
