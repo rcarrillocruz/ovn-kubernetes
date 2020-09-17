@@ -14,6 +14,7 @@ import (
 
 	"github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo"
+	"github.com/ovn-org/ovn-kubernetes/go-controller/pkg/util"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/kubernetes/test/e2e/framework"
